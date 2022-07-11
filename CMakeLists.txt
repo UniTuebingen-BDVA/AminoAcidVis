@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.0.0)
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake CACHE PATH "Project specific path. Set manually if it was not found.")
+set(PROJECT_EXTERNALS_PATH ${CMAKE_SOURCE_DIR}/externals CACHE PATH "Project specific path. Set manually if it was not found.")
+set(PROJECT_EXECUTABLES_PATH ${CMAKE_SOURCE_DIR}/src/executables CACHE PATH "Project specific path. Set manually if it was not found.")
+set(PROJECT_LIBRARIES_PATH ${CMAKE_SOURCE_DIR}/src/libraries CACHE PATH "Project specific path. Set manually if it was not found.")
+set(PROJECT_ICONS_PATH ${CMAKE_SOURCE_DIR}/resources/icon CACHE PATH "Project specific path. Set manually if it was not found.")
+set(PROJECT_UI_PATH ${CMAKE_SOURCE_DIR}/src/ui CACHE PATH "Project specific path. Set manually if it was not found.")
+set(PROJECT_DEFAULT_RESOURCES_PATH ${CMAKE_SOURCE_DIR}/resources CACHE PATH "Project specific path. Set manually if it was not found.")
+set(PROJECT_VERSION 0.1.8 CACHE PATH "Project version number.")
+include(${CMAKE_MODULE_PATH}/QTProject.cmake)
+project(${ProjectId})

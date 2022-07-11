@@ -6,13 +6,16 @@
 *.autosave
 *.exe
 *.dll
+*.res
 *CMakeCache.txt
 *CMakeLists.txt.user*
 *.orig
+*.idea/
+cmake-build-debug/
+cmake-build-release/
 src/CMakeFiles/
 resources/config.ini
 src-build/*
 build_src/
-src/externals/*
 doc/html
 html

@@ -3,14 +3,24 @@
 This tool allows the user to load a protein *(.pdb)* and a corresponding trajectory *(.xtc)*, 
 visualize them with different methods and compute their Residue Surface Proximity. 
 
-![preview](https://gitlab.uni-koblenz.de/agueev/AminoAcidVis/raw/master/doc/images/preview/preview-alpha3.jpg "Tool preview")
-
-# Setup
-* [Setup on Windows](https://gitlab.uni-koblenz.de/agueev/AminoAcidVis/wikis/SetupWindows)
-* [Setup on Ubuntu](https://gitlab.uni-koblenz.de/agueev/AminoAcidVis/wikis/SetupUbuntu)
+![preview](https://github.com/UniTuebingen-BDVA/AminoAcidVis/blob/master/doc/images/preview/preview-alpha3.jpg?raw=true "Tool preview")
 
 # Requirements
 OpenGL 4.5 compatible hardware and driver.
+
+# Setup
+* Clone the repository, including all submodules: `clone --recurse-submodules  http://github.com/UniTuebingen-BDVA/AminoAcidVis.git`.
+* Install Qt.
+  * The tested version is Qt 5.15.2 with MinGW 8.1.0. Install the approprriate Qt version and the compiler that comes with it.
+* Add the `QT_PLUGIN_PATH` to your environment variables (system or run-configuration), e.g.,`QT_PLUGIN_PATH=C:\Qt\5.15.2\mingw81_64\plugins`.
+* Append the compiler binary directory to the `PATH`, e.g., `PATH=%PATH%;C:\Qt\5.15.2\mingw81_64\bin`.
+* Configure the project:
+  * Run CMake, it will only configure the XTC build.
+  * Build the XTC library.
+  * Run CMake again to finish the configuration.
+
+#### Example Toolchain MinGW in CLion
+![preview](https://github.com/UniTuebingen-BDVA/AminoAcidVis/blob/master/doc/images/setup/mingw_toolcahin_clion.png?raw=true "Tool preview")
 
 # Used external libraries
 * [glew-cmake](https://github.com/Perlmint/glew-cmake) - The OpenGL Extension Wrangler Library 

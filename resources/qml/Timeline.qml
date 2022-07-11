@@ -197,7 +197,7 @@ Rectangle {
 	
 	Connections {
 		target: mainWidget
-		onTimelineScrollTo: { 
+		function onTimelineScrollTo(row) {
 			console.log(row)
 			scrollToRow(row)
 		}

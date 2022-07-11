@@ -149,9 +149,10 @@ protected:
 	QMap<QString, Info> p_uniformMap;
 };
 
-// ====== Tempates ======
+// ====== Templates ======
 template<typename T>
-Shader* __attribute__((deprecated("There is no specialization available for the given typename!"))) Shader::setUniform(int, const T&){
+[[deprecated("There is no specialization available for the given typename!")]]
+Shader* Shader::setUniform(int, const T&){
 	qWarning()<<"["<<__PRETTY_FUNCTION__<<"::"<< __LINE__ <<"]: There is no specialization available for the given typename ("<< typeid(T).name() <<")!";
 	return this;
 }
