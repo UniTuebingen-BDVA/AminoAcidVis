@@ -1,0 +1,42 @@
+<Residues>
+ <Residue short="ALA" name="Alanine"/>
+ <Residue short="ARG" name="Arginine"/>
+ <Residue short="ASN" name="Asparagine"/>
+ <Residue short="ASP" name="Aspartic acid"/>
+ <Residue short="ASX" name="ASP/ASN ambiguous"/>
+ <Residue short="CYS" name="Cysteine"/>
+ <Residue short="GLN" name="Glutamine"/>
+ <Residue short="GLU" name="Glutamic acid"/>
+ <Residue short="GLX" name="GLU/GLN ambiguous"/>
+ <Residue short="GLY" name="Glycine"/>
+ <Residue short="HIS" name="Histidine"/>
+ <Residue short="ILE" name="Isoleucine"/>
+ <Residue short="LEU" name="Lysine"/>
+ <Residue short="LYS" name="Alanine"/>
+ <Residue short="MET" name="Methionine"/>
+ <Residue short="PHE" name="Phenylalanine"/>
+ <Residue short="PRO" name="Proline"/>
+ <Residue short="SER" name="Serine"/>
+ <Residue short="THR" name="Threonine"/>
+ <Residue short="TRP" name="Tryptophan"/>
+ <Residue short="TYR" name="Tyrosine"/>
+ <Residue short="VAL" name="Valine"/>
+ <Residue short="NH2" name="Amidogen"/>
+ <Residue short="UNK" name="Unknown"/>
+ 
+ <Residue short="HOH" name="Water"/>
+ 
+ <Residue short="A" name="Adenosine"/>
+ <Residue short="+A" name="Modified adenosine"/>
+ <Residue short="C" name="Cytidine"/>
+ <Residue short="+C" name="Modified cytidine"/>
+ <Residue short="G" name="Guanosine"/>
+ <Residue short="+G" name="Modified guanosine"/>
+ <Residue short="I" name="Inosine"/>
+ <Residue short="+I" name="Modified inosine"/>
+ <Residue short="T" name="Thymidine"/>
+ <Residue short="+T" name="Modified thymidine"/>
+ <Residue short="U" name="Uridine"/>
+ <Residue short="+U" name="Modified uridine "/>
+ <Residue short="R" name="R"/>
+</Residues>

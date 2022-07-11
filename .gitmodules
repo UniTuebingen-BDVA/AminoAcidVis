@@ -1,0 +1,6 @@
+[submodule "src/externals/glew-cmake"]
+	path = src/externals/glew-cmake
+	url = https://github.com/Perlmint/glew-cmake.git
+[submodule "src/externals/glm"]
+	path = src/externals/glm
+	url = https://github.com/g-truc/glm

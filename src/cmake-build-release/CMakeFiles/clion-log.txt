@@ -1,0 +1,14 @@
+"C:\Program Files\JetBrains\CLion 2020.3.1\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2020.3.1/bin/ninja/win/ninja.exe" -G Ninja "C:\Arbeit Uni Tuebingen\Entwicklung\AminoAcidVis-master\AminoAcidVis-master\src"
+OpenGL3_INCLUDE_DIR: OpenGL3_INCLUDE_DIR-NOTFOUND
+OpenGL3_LIBRARIES: OpenGL32
+CMake Error at C:/Program Files/JetBrains/CLion 2020.3.1/bin/cmake/win/share/cmake-3.21/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
+  Could NOT find OpenGL3 (missing: OpenGL3_INCLUDE_DIR)
+Call Stack (most recent call first):
+  C:/Program Files/JetBrains/CLion 2020.3.1/bin/cmake/win/share/cmake-3.21/Modules/FindPackageHandleStandardArgs.cmake:594 (_FPHSA_FAILURE_MESSAGE)
+  cmake/FindOpenGL3.cmake:29 (FIND_PACKAGE_HANDLE_STANDARD_ARGS)
+  cmake/QTProject.cmake:18 (find_package)
+  CMakeLists.txt:11 (include)
+
+
+-- Configuring incomplete, errors occurred!
+See also "C:/Arbeit Uni Tuebingen/Entwicklung/AminoAcidVis-master/AminoAcidVis-master/src/cmake-build-release/CMakeFiles/CMakeOutput.log".

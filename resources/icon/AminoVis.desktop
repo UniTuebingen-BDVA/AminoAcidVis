@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=AminoVis
+GenericName=Amino Acid Visualisation
+Comment=Tool to visualize amini acids and there trajectories
+Exec=AminoVis
+Terminal=false
+Type=Application
+Icon=aminovis
+Categories=Science
+StartupNotify=false

@@ -1,0 +1,86 @@
+/*!
+@page "Surface Extraction"
+#  Surface Extraction
+
+Surface Atom Extraction is based of the work of the author *[1]* and realized on the CPU and GPU, but with several improvements to decrease the computation time. First general idea of the algorithm and the differences to *[1]*  are explained and afterwards the implementation of the algorithm on the CPU and GPU are presented.
+
+## Overview
+
+The goal of Surface Atom Extraction is to find the atoms of a protein structure that can be accessed by a solvent probe. If the solvent probe can access an atom, which is viewed as a sphere with a Van der Waals (VdW) radius, then the atom will be classified as *Surface* otherwise as *Interior*. By peeling the surface atoms and repeating the solvent probe access test, the layer of an atom can be defined by the number of surface peels that must be performed to make the atom accessible by solvent probe. 
+
+But finding out if an atom is accessible by a solvent probe is an expediencies operation, as there are infinite possible positions on a sphere where a solvent probe can dock on. Therefore most extraction algorithms are based on Extended Spheres (SAEES). The idea is to set the radius of each atom to the sum of the VdW radius of the atom and the solvent probe radius. This means the surface of each atom sphere now represents the movement range of the solvent probe on the atom. Afterwards each atom sphere is cut with all neighboring atom spheres that intersect that sphere and by doing so each time a part of surface of the sphere is cut away, reducing the movement range of the solvent probe.  If after all the cuts none of the atom sphere surface is left, then there is no location left where the solvent probe can dock on, therefore the atom is classified as *Interior* otherwise as *Surface*. The layer  of an atom can then also be extracted by just peeling the surface and repeating the classification.
+ 
+## Algorithm
+
+A big benefit of the SAEES algorithm that the classification can be performed for each atom of the molecule separately. Therefore we can go over each atom and processes them separately.
+At first a intersection test is performed for the currently processed atom's extended sphere and every other atom extended sphere in the molecule. The test is trivial as we just need to compare the distance *d* between the sphere's centers and the sum \f$r_{sum}\f$ of the radii \f$r_0 , r_1\f$ of both extended sphere's. In total there are 5 possible configurations as shown in Figure 1:
+
+- **(a)** \f$d > r_{sum}\f$ Both extended sphere's are to far away from each other. Therefore there is no intersection and we don't need to continue. 
+- **(b)** \f$d = r_{sum}\f$ Both extended sphere's are touching each other at exactly one point. This singular point doesn't define any area on the surface, therefore we don't need to continue.  (It also mean's the solvent probe can exactly fit between the two atoms at this point.)
+- **(c)** \f$r_0 > r_1+d\f$ or \f$r_1 > r_0+d\f$ One extended sphere covers the other one fully. If the  currently processed atom's extended sphere is covered then it can be directly be classified as *Interior* else this case is ignored.
+- **(d)** \f$r_0 = r_1+d\f$ or \f$r_1 = r_0+d\f$ One extended sphere covers the other one fully, but they touch each other at exactly at one point. But like in *(b)* this point also doesn't have any area, therefore this case can be viewed the same as *(c)*
+- **(e)** \f$d < r_{sum}\f$ Both extended sphere's intersect each other, the result is a circle which lies on a plane.
+ 
+![Figure 1: Possible configurations of two atom's extended sphere.](configuration.png)
+
+Only the case **(e)** is from interest as only that configuration has a intersection. For each intersection the cutting plane is extracted and stored in a list. The plane is defines as a Hesse normal form \f$(\vec x- \vec o) \cdot \vec n = 0 \f$ with the normal \f$\vec n\f$ being the normelized direction vector between the center of the current processed extended sphere and center of the intersecting extended sphere. To calculate \f$\vec o\f$, the support vector of the plane and the center of the intersection circle, the distance \f$e\f$ of how much the cutting plane entered the current processed extended sphere is calculated:
+ \f[
+	 e = \frac{ d^{2} - r_0^2 + r_1^2 }{2*d}
+\f]
+Knowing \f$e\f$ we can just follow the line starting from the center of the processed  extended sphere with the direction \f$\vec n\f$ and length \f$c\f$:
+ \f[
+	 \vec o = \vec c_0 + e \cdot \vec n
+\f]
+
+To help with optimization additionally  \f$e\f$ in a normalized form \f$e_n = e / r_0\f$ and the radius of the intersection circle  \f$r_c = sqrt{r_0^2 - e^2} \f$ are stored.
+
+
+Next the the resulted list of cutting planes is optimized as there are possible configurations where one plane can discard another. These are the four possible configurations as shown in Figure 2:
+
+- **(a)** The two planes intersect each other inside the extended sphere.
+- **(b)** One plane cuts away the other, means one of them can be discarded.
+- **(c)** The two planes fully cut away the extended sphere. The atom is then directly classified as *Interior*.
+- **(d)** The is no intersection between the two planes inside the extended sphere.
+
+![Figure 2: Possible configurations of two cut planes.](cutplaneconfiguration.png)
+
+To determine these four cases the previous paper first calculated and stored the intersection line between the two planes. If the distance from the line to the sphere is smaller then the radius of the sphere, then it's case **(a)** else one of the others. To find out which it's tested if the center's of the circles are in-front or behind the cut planes.
+
+My approach can directly determine which of these four cases apply by observing the relationship between the angle (dot product) of the planes normal's and the normalized distance \f$e_n\f$ on how far the plane  entered the sphere. If the relationship is plotted, then it is observed that the resulting function is a ellipse and if the value is inside the ellipse then the planes intersect inside the sphere, case **(a)**. Furthermore we can deduct the other cases as well, by just determining in which region the value lies. 
+
+![Figure 3: Relationship between normal angle and normalized cut distance.](anglecutdistancerelationship.png)
+
+This reduces the required memory as we don't need to store the intersection line and the calculation is simplified as only the min and max value of the ellipse needs the be calculated:
+
+General ellipse equation:
+  \f[
+	\frac{ ( (x-h) cos(\alpha )+(y-k)sin(\alpha))^2  }{a^2} + 
+	\frac{ ( (x-h) sin(\alpha )-(y-k)cos(\alpha))^2  }{b^2} = 1
+\f]
+with \f$h=k=0\f$ and \f$\alpha = 45° (cos(45°) = sin(45°) = 1/2)\f$.
+\f$a\f$  and \f$b\f$ have a relationship with  \f$e_n\f$:
+ \f[a = \sqrt{a_n}\f]
+ \f[b = \sqrt{2-a_n}\f]
+
+Solving the general ellipse equation for y result in:
+ \f[y_{max} = \frac{a^2x + \sqrt{2}ab\sqrt{a^2+b^2-2x^2} -b^2x}{a^2 + b^2}\f]
+ \f[y_{min} = \frac{a^2x - \sqrt{2}ab\sqrt{a^2+b^2-2x^2} -b^2x}{a^2 + b^2}\f]
+
+Based on \f$y_{max}\f$ and \f$y_{min}\f$ the possible case can be determent:
+
+```
+IF cut distance B <= ymin THEN:
+    IF dot >= -cut distance A THEN:
+        case (b)[discard B];
+    ELSE:
+        case (d);
+ELSE IF cut distance B >= ymax THEN:
+IF dot > cut distance A THEN:
+        case (b)[discard A];
+    ELSE:    
+        case (c)[Done];
+ELSE:
+    case (a);
+```
+
+*/

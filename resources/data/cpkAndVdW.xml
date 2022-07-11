@@ -1,0 +1,37 @@
+<Elements>
+
+ <Element name="C" color="#494a54" vdw="170"/>
+ <Element name="N" color="#4c87ff" vdw="155"/>
+ <Element name="O" color="#ea5044" vdw="152"/>
+ <Element name="F" color="#6ce360" vdw="147"/>
+ <Element name="Cl" color="#69d15e" vdw="175"/>
+ <Element name="Cr" color="#885641" vdw="0"/>
+ <Element name="I" color="#7b2bbd" vdw="198"/>
+ <Element name="C" color="#494a54" vdw="170"/>
+ <Element name="He" color="#16c8e8" vdw="140"/>
+ <Element name="Ne" color="#16c8e8" vdw="154"/>
+ <Element name="Ar" color="#16c8e8" vdw="188"/>
+ <Element name="Xe" color="#16c8e8" vdw="216"/>
+ <Element name="Kr" color="#16c8e8" vdw="202"/>
+ <Element name="P" color="#ff9f0e" vdw="180"/>
+ <Element name="S" color="#ffe522" vdw="180"/>
+ <Element name="B" color="#ffaa77" vdw="192"/>
+ 
+ <Element name="H" color="#dcdde6" vdw="120"/>
+ <Element name="Li" color="#7700ff" vdw="182"/>
+ <Element name="Na" color="#7700ff" vdw="227"/>
+ <Element name="K" color="#7700ff" vdw="275"/>
+ <Element name="Rb" color="#7700ff" vdw="303"/>
+ <Element name="Cs" color="#7700ff" vdw="343"/>
+ <Element name="Fr" color="#7700ff" vdw="348"/>
+ 
+ <Element name="Be" color="#088008" vdw="153"/>
+ <Element name="Mg" color="#088008" vdw="173"/>
+ <Element name="Ca" color="#088008" vdw="231"/>
+ <Element name="Sr" color="#088008" vdw="249"/>
+ <Element name="Ba" color="#088008" vdw="268"/>
+ <Element name="Ra" color="#088008" vdw="283"/>
+ 
+ <Element name="Ti" color="#999999" vdw="196"/>
+ <Element name="Fe" color="#d5780d" vdw="0"/>
+</Elements>
