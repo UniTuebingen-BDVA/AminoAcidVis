@@ -40,6 +40,7 @@
 #include <Atoms/FilterAtoms.h>
 #include <Atoms/FilterNode.h>
 #include <Atoms/FilterDefinitions.h>
+#include <fstream>
 
 void Atoms::readAltanativePDBNames(const QString &file) {
     m_alternativeResidueNames.clear();
@@ -711,25 +712,28 @@ bool Atoms::exportLayerData(const QString &path, float sasRadius) const {
     if (m_layers.empty() || path.isEmpty()) return false;
     QFileInfo info(path);
     if (info.suffix() == "bald") {
-        QFile file(path);
-        if (file.open(QIODevice::WriteOnly)) {
-            QDataStream stream(&file);
-            stream << 1111575620; //Magic number
-            stream << m_model.size(); // number of atoms
-            stream << m_layers.size(); // number of frames
-            stream << sasRadius; // SAS radius
+        auto stream = std::fstream(path.toStdString(), std::ios::out | std::ios::binary);
+        if (stream.is_open()) {
+            unsigned int magicNumber = 1111575620;
+            unsigned int numAtoms = m_model.size();
+            unsigned int numLayers = m_layers.size();
+            stream.write(reinterpret_cast<char *>(&magicNumber), sizeof(magicNumber));
+            stream.write(reinterpret_cast<char *>(&numAtoms), sizeof(numAtoms));
+            stream.write(reinterpret_cast<char *>(&numLayers), sizeof(numLayers));
+            stream.write(reinterpret_cast<char *>(&sasRadius), sizeof(sasRadius));
             for (const layerFrame &frame: m_layers) {
-                stream << frame.maxLayer;
+                unsigned int maxLayer = frame.maxLayer;
+                stream.write(reinterpret_cast<char *>(&maxLayer), sizeof(maxLayer));
                 if (frame.maxLayer != -1) {
-                    QVector<unsigned char> layers;
+                    std::vector<char> layers;
                     layers.reserve(m_model.size());
-                    for (float l: frame.layers) layers.push_back((unsigned char) l); //reduce each layer to one char
-                    stream.writeRawData((char *) layers.data(), m_model.size());
+                    for (float l: frame.layers) layers.push_back((char) l); //reduce each layer to one char
+                    stream.write((char *) layers.data(), m_model.size());
                 }
             }
-
             return true;
         }
+        stream.close();
     } else if (info.suffix() == "csv") {
         QFile file(path);
         if (file.open(QIODevice::WriteOnly)) {
@@ -747,6 +751,7 @@ bool Atoms::exportLayerData(const QString &path, float sasRadius) const {
                 }
                 stream << endl;
             }
+            file.close();
             return true;
         }
     }
@@ -757,14 +762,13 @@ bool Atoms::importLayerData(const QString &path, float &sasRadiusOut) {
     if (m_layers.empty() || path.isEmpty()) return false;
     QFileInfo info(path);
     if (info.suffix() == "bald") {
-        QFile file(path);
-        if (file.open(QIODevice::ReadOnly)) {
-            QDataStream stream(&file);
+        auto stream = std::ifstream(path.toStdString(), std::ios::in | std::ios::binary);
+        if (stream.is_open()) {
             int magicNumber, numAtoms, numFrames;
-            stream >> magicNumber; //Magic number
-            stream >> numAtoms;
-            stream >> numFrames;
-            stream >> sasRadiusOut;
+            stream.read(reinterpret_cast<char *>(&magicNumber), sizeof(magicNumber));
+            stream.read(reinterpret_cast<char *>(&numAtoms), sizeof(numAtoms));
+            stream.read(reinterpret_cast<char *>(&numFrames), sizeof(numFrames));
+            stream.read(reinterpret_cast<char *>(&sasRadiusOut), sizeof(sasRadiusOut));
 
             if (magicNumber != 1111575620 || numAtoms <= 0 || numFrames <= 0 || sasRadiusOut <= 0) {
                 qDebug() << "[importLayerData:" << __LINE__ << "]: Header invalid!";
@@ -778,13 +782,15 @@ bool Atoms::importLayerData(const QString &path, float &sasRadiusOut) {
             }
 
             for (layerFrame &frame: m_layers) {
-                stream >> frame.maxLayer;
+                unsigned int maxLayer;
+                stream.read(reinterpret_cast<char *>(&maxLayer), sizeof(maxLayer));
+                frame.maxLayer = maxLayer;
                 frame.layers.clear();
                 if (frame.maxLayer != -1) {
-                    QVector<unsigned char> layers(m_model.size());
-                    stream.readRawData((char *) layers.data(), m_model.size());
+                    std::vector<char> layers(m_model.size());
+                    stream.read((char *) layers.data(), m_model.size());
                     frame.layers.reserve(m_model.size());
-                    for (unsigned char l: layers) frame.layers.push_back((float) l);
+                    frame.layers = QVector<float>(layers.begin(), layers.end());
                 }
             }
 
